@@ -232,10 +232,10 @@ exports.submitAnswer = async (req, res) => {
 
     console.error("Submit Answer Error:", error);
 
-    res.status(500).json({
-      message: "Evaluation failed",
-      error: error.message
-    });
+  res.status(500).json({
+    message: "Evaluation failed",
+    error: error.message
+  });
 
   }
 

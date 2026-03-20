@@ -41,17 +41,17 @@ if(!stats) return <p>Loading.....</p>;
 
 return(
 <>
-<div className="bg-neutral-800">
+<div className="bg-white">
 <h1 className="text-white px-4 py-2 gap-5">Dashboard</h1>
 <div className="flex px px-4 py-2 gap-8"
  style={{padding:"40px"}}>
 <button
-className="flex justify-items-end rounded-4xl bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 height-5xl px-4 py-2"
+className="flex justify-items-end rounded-xl bg-blue-500 text-white  hover:bg-blue-600 height-5xl px-4 py-2"
 onClick={()=>navigate("/interview")}
 style={{
-marginTop:"20px",
+marginTop:"10px",
 
-height:"40px",
+height:"60px",
 border:"none",
 display:"flex",alignItems:"center",
 gap:"5px"
