@@ -2,9 +2,6 @@ const Interview = require("../models/Interview");
 const mockAI = require("../utils/mockAI");  // moved to service for cleaner controller and it was just a temp solution, we can remove it later when we have real AI integration from utils
 const aiService = require("../services/aiService");
 
-
-
-
 // 🚀 Generate Interview Question with AI ( API)
 // exports.generateQuestion = async (req, res) => {
 //   try {
