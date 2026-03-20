@@ -1,12 +1,11 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Interview = require("../models/Interview");
-const mockAI = require("../utils/mockAI");
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
+const mockAI = require("../utils/mockAI");  // moved to service for cleaner controller and it was just a temp solution, we can remove it later when we have real AI integration from utils
+const aiService = require("../services/aiService");
 
 
-// 🚀 Generate Interview Question
+
+
+// 🚀 Generate Interview Question with AI ( API)
 // exports.generateQuestion = async (req, res) => {
 //   try {
 
@@ -64,14 +63,18 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 //   }
 // };
 
-//generate temp question without AI for testing
+//agian for api link testing
 exports.generateQuestion = async (req, res) => {
 
   try {
 
     const { role } = req.body;
 
-    const question = mockAI.generateQuestion(role);
+    if (!role) {
+      return res.status(400).json({ message: "Role is required" });
+    }
+
+    const question = await aiService.generateQuestion(role);
 
     const interview = await Interview.create({
       userId: req.user.id,
@@ -79,17 +82,50 @@ exports.generateQuestion = async (req, res) => {
       question
     });
 
-    res.json({
+    res.status(200).json({
+      message: "Question generated",
       question
     });
 
-  } catch (err) {
+  } catch (error) {
 
-    res.status(500).json({ message: "Question generation failed" });
+    console.error("Generate Question Error:", error);
+
+    res.status(500).json({
+      message: "AI error",
+      error: error.message
+    });
 
   }
 
 };
+
+//generate temp question without AI for testing
+// exports.generateQuestion = async (req, res) => {
+
+//   try {
+
+//     const { role } = req.body;
+
+//     const question = mockAI.generateQuestion(role);
+
+//     const interview = await Interview.create({
+//       userId: req.user.id,
+//       role,
+//       question
+//     });
+
+//     res.json({
+//       question
+//     });
+
+//   } catch (err) {
+
+//     res.status(500).json({ message: "Question generation failed" });
+
+//   }
+
+// };
 
 
 
@@ -165,14 +201,18 @@ exports.generateQuestion = async (req, res) => {
 //   }
 // };
 
-//submit temp answer without AI for testing
+//again for api link testing
 exports.submitAnswer = async (req, res) => {
 
   try {
 
     const { role, question, answer } = req.body;
 
-    const result = mockAI.evaluateAnswer(answer);
+    if (!question || !answer) {
+      return res.status(400).json({ message: "Question and answer required" });
+    }
+
+    const result = await aiService.evaluateAnswer(question, answer);
 
     const interview = await Interview.create({
       userId: req.user.id,
@@ -183,15 +223,51 @@ exports.submitAnswer = async (req, res) => {
       score: result.score
     });
 
-    res.json(interview);
+    res.status(200).json({
+      message: "Answer evaluated",
+      interview
+    });
 
-  } catch (err) {
+  } catch (error) {
 
-    res.status(500).json({ message: "Evaluation failed" });
+    console.error("Submit Answer Error:", error);
+
+    res.status(500).json({
+      message: "Evaluation failed",
+      error: error.message
+    });
 
   }
 
 };
+
+//submit temp answer without AI for testing
+// exports.submitAnswer = async (req, res) => {
+
+//   try {
+
+//     const { role, question, answer } = req.body;
+
+//     const result = mockAI.evaluateAnswer(answer);
+
+//     const interview = await Interview.create({
+//       userId: req.user.id,
+//       role,
+//       question,
+//       answer,
+//       feedback: result.feedback,
+//       score: result.score
+//     });
+
+//     res.json(interview);
+
+//   } catch (err) {
+
+//     res.status(500).json({ message: "Evaluation failed" });
+
+//   }
+
+// };
 
 
 
